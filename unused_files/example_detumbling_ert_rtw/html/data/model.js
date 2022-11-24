@@ -1,0 +1,1 @@
+var modelInfo = {model:"example_detumbling"};var modelHierarchy=[{model:"example_detumbling",relativePath:"_internal.html",parent:"null"},];
