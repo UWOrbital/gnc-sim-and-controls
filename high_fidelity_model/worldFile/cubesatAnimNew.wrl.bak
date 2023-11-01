@@ -1,0 +1,123 @@
+#VRML V2.0 utf8
+# VRML model of the Earth 
+# Texture images used are from the NASA Visible Earth catalog:
+# http://visibleearth.nasa.gov                               
+
+WorldInfo {
+  title "CubeSat Orbit Visualization"
+  info "Copyright 2016-2019 HUMUSOFT s.r.o. and MathWorks, Inc." 
+}
+NavigationInfo {
+  visibilityLimit 200000
+  type "EXAMINE" 
+  speed 10
+  # avatarSize [ 10 10 10 ]
+  headlight TRUE
+}
+DirectionalLight {
+  direction 1 -2 1
+  ambientIntensity 0.2
+}
+DirectionalLight {
+  direction -1 -2 -1
+  ambientIntensity 0.2
+}
+DEF SkyDome Transform {
+  # SkyDome diameter in the Inlined file is 10000
+  translation 0 0 0
+  scale 8 8 8
+  children Inline {
+    url "skyAnim.wrl" 
+  }
+}
+# Sun
+PointLight {
+  radius 10000
+  location 10000 0 0
+  # attenuation	0 0 0
+  color 1 1 1
+  attenuation 0 0 0
+  ambientIntensity 0.5
+}
+DEF NorthPole Transform {
+  translation 0 18 0
+  rotation -1 0 0 1.5708
+  children Viewpoint {
+    description "NorthPole"
+    position 0 0 18
+    fieldOfView 0.5
+  }
+}
+DEF EarthSide Transform {
+  translation 0 0 12
+  children Viewpoint {
+    description "EarthSide"
+  }
+}
+DEF Earth Transform {
+  scale 1 0.999999 0.999999
+  rotation 0 3.6461e-05 0 7.2921e-05
+  children [
+    DEF EarthTopo Transform {
+      scale 6.37814 6.35675 6.37814
+      children Inline {
+        url "earthAnim.wrl" 
+      }
+    }
+    DEF Satellite_TEMPLATE Transform {
+      children [
+        DEF Satellite Transform {
+          children Inline {
+            url "cubesat.wrl" 
+          }
+        }
+        DEF FollowSat Transform {
+          rotation -0.0923 -0.7011 -0.0923 1.5878
+          children DEF Eeek Viewpoint {
+            description "Satellite-fixed"
+            position 0 0 0
+          }
+        }
+      ]
+    }
+    DEF Sun Transform {
+      translation -13528.3 -5687.39 1011.79
+      children [
+        DEF SunOrb Shape {
+          appearance Appearance {
+            texture ImageTexture {
+              url "texture/sun.jpg" 
+            }
+            material Material {
+              specularColor 1 0.8 0
+              shininess 1
+              emissiveColor 1 1 0
+              diffuseColor 1 0.8 0
+              ambientIntensity 0.5
+            }
+          }
+          geometry Sphere {
+            radius 695.508
+          }
+        }
+        DEF Umbra Transform {
+          translation 14164.7 5954.94 -1059.38
+          rotation 0 -0.062101 0.55379 5.10102
+          children Shape {
+            appearance Appearance {
+              material Material {
+                transparency 0.75
+                diffuseColor 0 0 0
+                ambientIntensity 1
+              }
+            }
+            geometry Cone {
+              height 1384
+              bottomRadius 6.5
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
