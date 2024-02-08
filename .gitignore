@@ -1,2 +1,11 @@
-# List of untracked files to ignore
+*.asv
+*.m~
+*.mex*
+*.mlappinstall
+*.mltbx
+helpsearch*/
+slprj/
+sccprj/
+codegen/
+*.autosave
 *.slxc
