@@ -1,7 +1,14 @@
 function v = quatrotate_cgen(q,v)
 
-assert(isequal(size(q), [1 4]), 'Array q size is not [1 4].');
-assert(isequal(size(v), [1 3]), 'Array v size is not [1 3].');
+arguments (Input)
+    q (1,4) double
+    v (1,3) double
+end
+
+arguments (Output)
+    v (1,3) double
+end
+
 
 q0 = q(1);
 q1 = q(2);
