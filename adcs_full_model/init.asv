@@ -68,7 +68,7 @@ Actuators.RW.max_torque     = 0.0023;   % Max motor torque (N*m)
 % Magnetic Torquers
 Actuators.MTQ.max_dipole    = 0.3;     % Max dipole moment (A*m^2)
 Actuators.MTQ.max_nom_current = 0.142;
-Actuators.MTQ.H = 1 * Actuators.MTQ.max_dipole/Actuators.MTQ.max_nom_current;
+Actuators.MTQ.H = 
 Actuators.MTQ.efficiency    = 0.95;
 
 %% Controller & Estimator Parameters
