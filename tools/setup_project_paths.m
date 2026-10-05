@@ -1,16 +1,8 @@
 %% setup_project_paths.m
-% One-time (and safe to re-run) fix-up of the MATLAB project after the repo
-% reorganization.
+% Script to reorganize the project models to work with the new folders and directories
+% I used Claude to generate this but it only fixes the broken links/connections
 %
-% What changed:
-%   adcs_full_model.prj and resources/ moved from adcs_full_model/ to the
-%   repo root, and every model moved into config/ or models/<area>/.
-%   The project files in resources/project/ still list the old locations
-%   (e.g. "environment.slx" at the root) and the project path is only the
-%   root folder.
-%
-% What this script does (through the project API, never by editing the
-% hashed XML by hand):
+% What this script does by using project API:
 %   1. Opens the project at the repo root.
 %   2. Removes file entries whose file no longer exists on disk (stale).
 %   3. Adds the active folders and their files to the project.
@@ -18,10 +10,7 @@
 %   5. Removes the bare repo root from the project path (nothing runs from
 %      there anymore).
 %
-% archived/ is NEVER added to the project or the path. It contains older
-% copies of models with the same names, which would shadow the real ones.
-%
-% Usage (from MATLAB, any current folder):
+% Usage:
 %   run('<repo>/tools/setup_project_paths.m')
 % Then review the changes in the project and commit resources/project/.
 
@@ -60,7 +49,7 @@ end
 % These are the folders the team works in. archived/ is deliberately left
 % out. Folders that do not exist yet are skipped.
 projectFolders = {'config', 'models', 'libraries', 'tools', 'tests', ...
-                  'analysis', 'flight_software', 'docs'};
+    'analysis', 'flight_software', 'docs'};
 
 for k = 1:numel(projectFolders)
     folder = fullfile(repoRoot, projectFolders{k});
@@ -88,7 +77,7 @@ for k = 1:numel(labelFolders)
     end
     % dir with ** searches every subfolder
     files = [dir(fullfile(folder, '**', '*.slx')); ...
-             dir(fullfile(folder, '**', '*.m'))];
+        dir(fullfile(folder, '**', '*.m'))];
     for j = 1:numel(files)
         filePath = fullfile(files(j).folder, files(j).name);
         projFile = findFile(proj, filePath);
@@ -97,7 +86,7 @@ for k = 1:numel(labelFolders)
         end
         % Only add the label if the file does not have it yet
         hasDesign = any(arrayfun(@(L) strcmp(L.CategoryName, 'Classification') ...
-                        && strcmp(L.Name, 'Design'), projFile.Labels));
+            && strcmp(L.Name, 'Design'), projFile.Labels));
         if ~hasDesign
             addLabel(projFile, 'Classification', 'Design');
         end
@@ -127,7 +116,7 @@ end
 %% 5. Add those folders to the project path (skip ones already on it)
 % Read the current project path once so re-running the script is harmless.
 currentPath = arrayfun(@(f) char(f.File), proj.ProjectPath, ...
-                       'UniformOutput', false);
+    'UniformOutput', false);
 
 for k = 1:numel(pathFolders)
     folder = pathFolders{k};
@@ -153,7 +142,7 @@ end
 
 %% 7. Summary
 finalPath = arrayfun(@(f) char(f.File), proj.ProjectPath, ...
-                     'UniformOutput', false);
+    'UniformOutput', false);
 fprintf('\nProject path now has %d folders:\n', numel(finalPath));
 fprintf('  %s\n', finalPath{:});
 fprintf('\nDone. Open models/top/adcs_model.slx to check that it loads,\n');
