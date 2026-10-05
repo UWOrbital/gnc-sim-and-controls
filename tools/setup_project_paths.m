@@ -76,6 +76,34 @@ if isfile(readme)
     addFile(proj, readme);
 end
 
+%% 3b. Restore the "Design" classification label
+% Before the move, every model and init.m was labelled Classification =
+% Design. Removing the stale entries dropped those labels, so put them back
+% on the .slx and .m files in config/ and models/.
+labelFolders = {'config', 'models'};
+for k = 1:numel(labelFolders)
+    folder = fullfile(repoRoot, labelFolders{k});
+    if ~isfolder(folder)
+        continue
+    end
+    % dir with ** searches every subfolder
+    files = [dir(fullfile(folder, '**', '*.slx')); ...
+             dir(fullfile(folder, '**', '*.m'))];
+    for j = 1:numel(files)
+        filePath = fullfile(files(j).folder, files(j).name);
+        projFile = findFile(proj, filePath);
+        if isempty(projFile)
+            continue
+        end
+        % Only add the label if the file does not have it yet
+        hasDesign = any(arrayfun(@(L) strcmp(L.CategoryName, 'Classification') ...
+                        && strcmp(L.Name, 'Design'), projFile.Labels));
+        if ~hasDesign
+            addLabel(projFile, 'Classification', 'Design');
+        end
+    end
+end
+
 %% 4. Build the list of folders that belong on the project path
 % config/     : only the top folder. Future per-mission parameter sets will
 %               likely reuse file names in subfolders, so those should be
